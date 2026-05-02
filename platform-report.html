@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ducker Analytica — Platform Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue-950: #0a1628;
+    --blue-900: #0f1e3d;
+    --blue-800: #1a2f5a;
+    --blue-700: #1E3A8A;
+    --blue-600: #1E40AF;
+    --blue-500: #2563EB;
+    --blue-400: #3B82F6;
+    --blue-300: #60A5FA;
+    --blue-200: #BFDBFE;
+    --blue-100: #DBEAFE;
+    --amber: #D97706;
+    --amber-light: #FCD34D;
+    --green: #10B981;
+    --red: #EF4444;
+    --purple: #8B5CF6;
+    --cyan: #06B6D4;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Fira Sans', sans-serif;
+    background: var(--slate-50);
+    color: var(--slate-800);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ─── HERO ───────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, var(--blue-950) 0%, var(--blue-900) 50%, #0d2040 100%);
+    color: white;
+    padding: 72px 48px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(59,130,246,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(139,92,246,0.08) 0%, transparent 60%);
+  }
+  .hero-inner { position: relative; max-width: 960px; margin: 0 auto; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(59,130,246,0.15);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: var(--blue-300);
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+  .hero-badge::before { content: '●'; font-size: 8px; color: var(--green); }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--blue-400); }
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(255,255,255,0.65);
+    max-width: 560px;
+    line-height: 1.65;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .hero-stat { }
+  .hero-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    font-family: 'Fira Code', monospace;
+    line-height: 1;
+  }
+  .hero-stat-value span { color: var(--blue-400); }
+  .hero-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .hero-divider { width: 1px; background: rgba(255,255,255,0.1); }
+
+  /* ─── NAV ────────────────────────────────────────────── */
+  .toc {
+    background: white;
+    border-bottom: 1px solid var(--slate-200);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 12px rgba(0,0,0,0.06);
+  }
+  .toc-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc-inner::-webkit-scrollbar { display: none; }
+  .toc a {
+    display: block;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate-500);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .toc a:hover { color: var(--blue-600); border-bottom-color: var(--blue-400); }
+
+  /* ─── CONTENT ────────────────────────────────────────── */
+  .page { max-width: 960px; margin: 0 auto; padding: 0 48px 80px; }
+
+  section { padding-top: 64px; }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--blue-500);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section-label::before { content: '//'; opacity: 0.5; }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--slate-900);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .section-desc {
+    font-size: 15px;
+    color: var(--slate-500);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  /* ─── CARDS ──────────────────────────────────────────── */
+  .card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 12px;
+    padding: 24px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-color: var(--blue-200);
+  }
+
+  /* ─── GRID LAYOUTS ───────────────────────────────────── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+
+  /* ─── STAT CARDS ─────────────────────────────────────── */
+  .stat-card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-card-value {
+    font-family: 'Fira Code', monospace;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--blue-600);
+    line-height: 1;
+  }
+  .stat-card-label {
+    font-size: 12px;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 6px;
+  }
+
+  /* ─── FEATURE CARDS ──────────────────────────────────── */
+  .feature-card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 12px;
+    padding: 22px;
+    transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .feature-card:hover {
+    box-shadow: 0 6px 24px rgba(30,64,175,0.08);
+    border-color: var(--blue-200);
+    transform: translateY(-1px);
+  }
+  .feature-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .feature-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--slate-800);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .feature-card p {
+    font-size: 13px;
+    color: var(--slate-500);
+    line-height: 1.55;
+  }
+
+  /* ─── INTEGRATION GRID ───────────────────────────────── */
+  .integration-chip {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate-700);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .integration-chip:hover {
+    border-color: var(--blue-300);
+    box-shadow: 0 2px 8px rgba(59,130,246,0.1);
+  }
+  .integration-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .integration-type {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: 'Fira Code', monospace;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── PHASE TIMELINE ─────────────────────────────────── */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--blue-500), var(--blue-200));
+    border-radius: 2px;
+  }
+  .timeline-item { position: relative; margin-bottom: 32px; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -28px; top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--blue-500);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--blue-300);
+  }
+  .timeline-phase {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--blue-500);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .timeline-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--slate-800);
+    margin-bottom: 8px;
+  }
+  .timeline-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .tag-blue { background: var(--blue-100); color: var(--blue-700); }
+  .tag-green { background: #D1FAE5; color: #065F46; }
+  .tag-purple { background: #EDE9FE; color: #5B21B6; }
+  .tag-amber { background: #FEF3C7; color: #92400E; }
+  .tag-cyan { background: #CFFAFE; color: #164E63; }
+  .tag-slate { background: var(--slate-100); color: var(--slate-600); }
+  .tag-red { background: #FEE2E2; color: #991B1B; }
+
+  /* ─── WORKFLOW STEPS ─────────────────────────────────── */
+  .workflow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0;
+    position: relative;
+  }
+  .workflow-step {
+    background: white;
+    border: 1px solid var(--slate-200);
+    padding: 20px 18px;
+    position: relative;
+    text-align: center;
+  }
+  .workflow-step:first-child { border-radius: 10px 0 0 10px; }
+  .workflow-step:last-child { border-radius: 0 10px 10px 0; }
+  .workflow-step:not(:first-child) { border-left-width: 0; }
+  .workflow-arrow {
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    background: var(--blue-500);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 13px;
+    z-index: 1;
+  }
+  .workflow-step:last-child .workflow-arrow { display: none; }
+  .workflow-num {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--blue-400);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .workflow-step h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate-800);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .workflow-step p {
+    font-size: 11px;
+    color: var(--slate-400);
+    line-height: 1.5;
+  }
+
+  /* ─── TABLE ──────────────────────────────────────────── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .data-table th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--slate-50);
+    border-bottom: 1px solid var(--slate-200);
+  }
+  .data-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--slate-100);
+    color: var(--slate-700);
+    vertical-align: top;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #fafbff; }
+  .code { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--blue-600); background: var(--blue-100); padding: 2px 6px; border-radius: 4px; }
+
+  /* ─── AI SECTION ─────────────────────────────────────── */
+  .ai-card {
+    background: linear-gradient(135deg, var(--blue-900) 0%, #0d1f3d 100%);
+    border-radius: 14px;
+    padding: 28px;
+    color: white;
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+  .ai-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .ai-card p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.55; }
+  .ai-tag {
+    display: inline-block;
+    background: rgba(59,130,246,0.2);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: var(--blue-300);
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    margin-top: 12px;
+  }
+
+  /* ─── TECH STACK ─────────────────────────────────────── */
+  .tech-group h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--slate-400);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .tech-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tech-pill {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate-700);
+    transition: border-color 0.15s;
+  }
+  .tech-pill:hover { border-color: var(--blue-300); color: var(--blue-700); }
+
+  /* ─── DIVIDER ─────────────────────────────────────────── */
+  .divider { height: 1px; background: var(--slate-100); margin: 40px 0; }
+
+  /* ─── FOOTER ─────────────────────────────────────────── */
+  .footer {
+    background: var(--slate-900);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 32px 48px;
+    font-size: 13px;
+    margin-top: 80px;
+  }
+  .footer strong { color: rgba(255,255,255,0.7); }
+
+  /* ─── CALLOUT ─────────────────────────────────────────── */
+  .callout {
+    background: #EFF6FF;
+    border-left: 3px solid var(--blue-500);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--slate-700);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .hero { padding: 48px 24px; }
+    .page { padding: 0 24px 60px; }
+    .toc-inner { padding: 0 24px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; }
+    .workflow { grid-template-columns: 1fr; }
+    .workflow-step { border-radius: 0; border-left-width: 1px; border-top-width: 0; }
+    .workflow-step:first-child { border-radius: 10px 10px 0 0; border-top-width: 1px; }
+    .workflow-step:last-child { border-radius: 0 0 10px 10px; }
+    .workflow-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── HERO ───────────────────────────────────────────── -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Platform Report &mdash; 2026-05-02</div>
+    <h1>Ducker <span>Analytica</span></h1>
+    <p class="hero-sub">White-label marketing analytics platform built for agencies. Aggregates 14+ data sources into a single AI-powered dashboard with full client management, automated reporting, and a real-time intelligence layer.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">14<span>+</span></div>
+        <div class="hero-stat-label">Data Sources</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">7</div>
+        <div class="hero-stat-label">Shipped Phases</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">6</div>
+        <div class="hero-stat-label">DB Migrations</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">3</div>
+        <div class="hero-stat-label">AI Providers</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─── NAV ────────────────────────────────────────────── -->
+<nav class="toc" aria-label="Table of contents">
+  <div class="toc-inner">
+    <a href="#overview">Overview</a>
+    <a href="#integrations">Integrations</a>
+    <a href="#features">Features</a>
+    <a href="#ai">AI Layer</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#tech">Tech Stack</a>
+    <a href="#phases">Phases</a>
+    <a href="#routes">Routes</a>
+  </div>
+</nav>
+
+<main class="page">
+
+  <!-- ─── OVERVIEW ──────────────────────────────────────── -->
+  <section id="overview">
+    <div class="section-label">Overview</div>
+    <h2>What Ducker Analytica Is</h2>
+    <p class="section-desc">A multi-tenant SaaS analytics platform that gives digital agencies a single branded dashboard per client — pulling in paid ads, organic social, SEO, and local presence data, then surfacing AI-generated insights on top.</p>
+
+    <div class="grid-4" style="margin-bottom:32px;">
+      <div class="stat-card">
+        <div class="stat-card-value">2</div>
+        <div class="stat-card-label">Portals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-value">17+</div>
+        <div class="stat-card-label">Dashboard Pages</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-value">40+</div>
+        <div class="stat-card-label">API Routes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-value">12</div>
+        <div class="stat-card-label">DB Tables</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:600;color:var(--slate-800);margin-bottom:10px;">Agency Portal <span class="tag tag-blue" style="vertical-align:middle;font-size:11px;">/agency/*</span></h3>
+        <p style="font-size:13px;color:var(--slate-500);line-height:1.6;">Super-admin layer for creating and managing client accounts, impersonating tenants, configuring per-client portal sections, and monitoring the full sync pipeline. Access-gated to <code class="code">super_admin</code> role.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:600;color:var(--slate-800);margin-bottom:10px;">Client Dashboard <span class="tag tag-blue" style="vertical-align:middle;font-size:11px;">/dashboard/*</span></h3>
+        <p style="font-size:13px;color:var(--slate-500);line-height:1.6;">Per-tenant analytics interface with white-labeled branding (custom logo, brand color, company name, custom domain). Each client only sees their own data via strict tenant isolation at every query.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── INTEGRATIONS ──────────────────────────────────── -->
+  <section id="integrations">
+    <div class="section-label">Data Sources</div>
+    <h2>Integration Ecosystem</h2>
+    <p class="section-desc">14+ platforms synced nightly via a single cron handler. Each integration has its own typed sync function, OAuth token management, and on-demand re-sync endpoint.</p>
+
+    <div class="callout">Sync cadence: nightly cron at <code class="code">/api/cron/nightly</code> dispatches all enabled integrations in parallel per client. On-demand sync available from Settings.</div>
+
+    <div class="grid-auto" style="margin-bottom:32px;">
+      <!-- Paid -->
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#4285F4;"></div>
+        Google Ads
+        <div class="integration-type">Paid</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#1877F2;"></div>
+        Meta Ads
+        <div class="integration-type">Paid</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#0077B5;"></div>
+        LinkedIn Ads
+        <div class="integration-type">Paid</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#010101;"></div>
+        TikTok Ads
+        <div class="integration-type">Paid</div>
+      </div>
+      <!-- Organic -->
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#1877F2;"></div>
+        Facebook Organic
+        <div class="integration-type">Social</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#E1306C;"></div>
+        Instagram Organic
+        <div class="integration-type">Social</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#FF0000;"></div>
+        YouTube Analytics
+        <div class="integration-type">Social</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#0077B5;"></div>
+        LinkedIn Organic
+        <div class="integration-type">Social</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#010101;"></div>
+        TikTok Organic
+        <div class="integration-type">Social</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#E60023;"></div>
+        Pinterest Analytics
+        <div class="integration-type">Social</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#16A34A;"></div>
+        Sprout Social
+        <div class="integration-type">Social</div>
+      </div>
+      <!-- Web/SEO -->
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#F9AB00;"></div>
+        Google Analytics 4
+        <div class="integration-type">Web</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#4285F4;"></div>
+        Search Console
+        <div class="integration-type">SEO</div>
+      </div>
+      <!-- Local + CRM -->
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#4285F4;"></div>
+        Google My Business
+        <div class="integration-type">Local</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#E53E3E;"></div>
+        CallRail
+        <div class="integration-type">Calls</div>
+      </div>
+      <div class="integration-chip">
+        <div class="integration-dot" style="background:#1A202C;"></div>
+        Klaviyo
+        <div class="integration-type">Email</div>
+      </div>
+    </div>
+
+    <div class="card" style="overflow:hidden;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Auth Method</th>
+            <th>Key Metrics</th>
+            <th>MCC / Managed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Google Ads</strong></td>
+            <td>OAuth2 + MCC token cache</td>
+            <td>Spend, impressions, clicks, conversions, ROAS</td>
+            <td><span class="tag tag-green">MCC Upgrade</span></td>
+          </tr>
+          <tr>
+            <td><strong>Meta Ads</strong></td>
+            <td>System User Token</td>
+            <td>Reach, spend, CPM, link clicks</td>
+            <td><span class="tag tag-slate">Per-account</span></td>
+          </tr>
+          <tr>
+            <td><strong>LinkedIn Ads</strong></td>
+            <td>OAuth2 + rotating refresh</td>
+            <td>Impressions, clicks, cost, conversions</td>
+            <td><span class="tag tag-slate">Per-account</span></td>
+          </tr>
+          <tr>
+            <td><strong>TikTok Ads</strong></td>
+            <td>OAuth2 + refresh</td>
+            <td>Impressions, clicks, spend, video views</td>
+            <td><span class="tag tag-amber">App Review Req.</span></td>
+          </tr>
+          <tr>
+            <td><strong>GA4</strong></td>
+            <td>Service account JSON</td>
+            <td>Sessions, users, bounce rate, conversions</td>
+            <td><span class="tag tag-green">Service Acct</span></td>
+          </tr>
+          <tr>
+            <td><strong>Search Console</strong></td>
+            <td>Service account JSON</td>
+            <td>Clicks, impressions, CTR, avg. position</td>
+            <td><span class="tag tag-green">Service Acct</span></td>
+          </tr>
+          <tr>
+            <td><strong>GMB Reviews</strong></td>
+            <td>Service account JSON</td>
+            <td>Avg. rating, total reviews, replied badges</td>
+            <td><span class="tag tag-green">Service Acct</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── FEATURES ──────────────────────────────────────── -->
+  <section id="features">
+    <div class="section-label">Feature Modules</div>
+    <h2>Platform Features</h2>
+    <p class="section-desc">Organized by product area — every module has backend APIs, custom React hooks, and a dedicated dashboard page.</p>
+
+    <div style="margin-bottom:28px;">
+      <p style="font-size:13px;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">Analytics Core</p>
+      <div class="grid-3">
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#EFF6FF;">📊</div>
+          <h3>Multi-channel KPI Overview</h3>
+          <p>Aggregated metric cards across all active sources. Configurable KPI list per client — enable/disable metrics, edit labels, set targets.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#F0FDF4;">📈</div>
+          <h3>Trend Charts with Forecasting</h3>
+          <p>Area charts with dashed forecast lines. Linear regression on 90-day history projects N days ahead with 95% CI bounds and a reference date line.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#FFF7ED;">🎯</div>
+          <h3>Attribution Modeling</h3>
+          <p>Four models: linear, last-click, first-click, time-decay. Side-by-side comparison table and % credit progress bars per channel.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#FDF4FF;">⚡</div>
+          <h3>Budget Pacing</h3>
+          <p>MTD spend vs daily target band chart. PacingBadge (On Pace / Overpacing / Underpacing) on paid channel pages. Email alert when projected overrun &gt;10%.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#F0FDF4;">🔍</div>
+          <h3>Anomaly Detection</h3>
+          <p>Z-score based detection on daily metric trends. Alerts surfaced on the Notifications page and pushed via email or Slack webhook per client preferences.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#ECFEFF;">🗂</div>
+          <h3>Drag-Drop Widget Layout</h3>
+          <p>@dnd-kit powered overview customization. Widget visibility + order persisted per user+client in <code class="code">user_dashboard_layouts</code>. "Customize" toggle reveals drag handles.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:28px;">
+      <p style="font-size:13px;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">Agency &amp; Client Management</p>
+      <div class="grid-3">
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#EFF6FF;">🏢</div>
+          <h3>White-Label Branding</h3>
+          <p>Per-client company name, logo URL, brand color (injected as <code class="code">--brand-primary</code> CSS var), custom domain. Sidebar, top nav, and footer all adapt dynamically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#FFF7ED;">👥</div>
+          <h3>Team Access Management</h3>
+          <p>Role-based access (<code class="code">super_admin</code>, client admin, viewer). Agency super-admin can impersonate any client for support and QA.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#F0FDF4;">🌐</div>
+          <h3>Client Portal</h3>
+          <p>Public-facing <code class="code">/portal/[clientSlug]</code> — server-rendered 30-day KPI summary with branded header. Respects agency-configured section toggles (KPIs, Trend, Channels, Spend).</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#FDF4FF;">🔗</div>
+          <h3>Shareable Report Links</h3>
+          <p>One-click data snapshots generate a public <code class="code">/r/[token]</code> URL with optional expiry. View count auto-increments. No login required for recipients.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#ECFEFF;">🎯</div>
+          <h3>Goal Tracking</h3>
+          <p>Per-client monthly/quarterly/annual targets per metric. Progress bars on Settings &gt; Goals and on the Overview widget. PATCH/DELETE per goal.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#EFF6FF;">⚙️</div>
+          <h3>Automation Rules Engine</h3>
+          <p>Trigger email or Slack actions when a metric crosses a threshold or drops by a %. Evaluated every nightly cron run. Full CRUD in Settings &gt; Automation Rules.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:13px;font-weight:600;color:var(--slate-500);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">Reporting &amp; Notifications</p>
+      <div class="grid-3">
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#FFF7ED;">📧</div>
+          <h3>Scheduled Reports</h3>
+          <p>Daily/weekly/monthly email reports via Resend. Configurable from Reports page. Full history stored in <code class="code">report_history</code> and visible in the UI.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#F0FDF4;">📋</div>
+          <h3>Notification History</h3>
+          <p>All anomaly alerts and automation-triggered actions persisted to <code class="code">notification_history</code>. Displayed in the Notifications page with an "Alert History" tab.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#EFF6FF;">📤</div>
+          <h3>Export Connectors</h3>
+          <p>Google Sheets: <code class="code">/api/export/sheets</code> returns JSON or CSV for IMPORTDATA. Looker Studio: community connector endpoint with 30+ field definitions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── AI LAYER ───────────────────────────────────────── -->
+  <section id="ai">
+    <div class="section-label">AI Intelligence</div>
+    <h2>AI &amp; LLM Layer</h2>
+    <p class="section-desc">Three LLM providers with a routing strategy, streaming chat, proactive insights, and a weekly executive summary — all built with prompt caching and adaptive thinking.</p>
+
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="ai-card">
+        <h3>Anthropic Claude</h3>
+        <p>Primary provider (Opus 4.7) with adaptive thinking and prompt caching. Used for insights generation and AI chat primary responses.</p>
+        <div class="ai-tag">claude-opus-4-7</div>
+      </div>
+      <div class="ai-card">
+        <h3>OpenAI GPT-4</h3>
+        <p>Fallback provider for latency or cost routing. Activated automatically when Anthropic is rate-limited or disabled.</p>
+        <div class="ai-tag">gpt-4-turbo</div>
+      </div>
+      <div class="ai-card">
+        <h3>Google Gemini</h3>
+        <p>Cost-optimized tier for high-volume tasks. Controlled via <code style="font-family:Fira Code;font-size:11px;color:var(--blue-300)">LLM_PROVIDER_STRATEGY</code>: cost | latency | load.</p>
+        <div class="ai-tag">gemini-2.0-flash</div>
+      </div>
+    </div>
+
+    <div class="card" style="overflow:hidden;margin-bottom:24px;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>AI Feature</th>
+            <th>Trigger</th>
+            <th>Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AI Chat</strong> — <code class="code">/dashboard/chat</code></td>
+            <td>User message via streaming SSE</td>
+            <td>Contextual analytics answers, logged to <code class="code">chatbot_interactions</code></td>
+          </tr>
+          <tr>
+            <td><strong>Proactive Insights</strong></td>
+            <td>Nightly cron after sync, or on-demand</td>
+            <td>3–5 client-specific insights, pin/dismiss UI on Overview</td>
+          </tr>
+          <tr>
+            <td><strong>Weekly AI Summary</strong></td>
+            <td>Every Monday nightly run</td>
+            <td>Narrative executive summary emailed via Resend, stored in <code class="code">report_history</code></td>
+          </tr>
+          <tr>
+            <td><strong>analyze_campaign</strong></td>
+            <td>AI chat tool call</td>
+            <td>Campaign breakdown: spend, clicks, CTR, CPC per ad source</td>
+          </tr>
+          <tr>
+            <td><strong>detect_anomalies</strong></td>
+            <td>AI chat tool call</td>
+            <td>Live z-score scan across current trend data</td>
+          </tr>
+          <tr>
+            <td><strong>generate_report</strong></td>
+            <td>AI chat tool call</td>
+            <td>Multi-source executive summary in one pass</td>
+          </tr>
+          <tr>
+            <td><strong>forecast_metric</strong></td>
+            <td>AI chat tool call</td>
+            <td>Linear regression projection with 95% CI bounds</td>
+          </tr>
+          <tr>
+            <td><strong>compare_channels</strong></td>
+            <td>AI chat tool call</td>
+            <td>CPC / CPL / ROAS / conv_rate comparison across paid channels</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── WORKFLOW ───────────────────────────────────────── -->
+  <section id="workflow">
+    <div class="section-label">Data Workflow</div>
+    <h2>How Data Flows</h2>
+    <p class="section-desc">From raw API calls to a cached, AI-annotated dashboard — the full pipeline from nightly sync to client view.</p>
+
+    <div class="workflow" style="margin-bottom:40px;">
+      <div class="workflow-step">
+        <div class="workflow-arrow">›</div>
+        <div class="workflow-num">01</div>
+        <h4>Nightly Cron</h4>
+        <p>Dispatches all enabled integrations per active client</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-arrow">›</div>
+        <div class="workflow-num">02</div>
+        <h4>Sync Functions</h4>
+        <p>Each integration fetches yesterday's data, upserts to <code class="code">daily_metrics</code></p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-arrow">›</div>
+        <div class="workflow-num">03</div>
+        <h4>MV Refresh</h4>
+        <p>REFRESH MATERIALIZED VIEW CONCURRENTLY on <code class="code">daily_metrics</code></p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-arrow">›</div>
+        <div class="workflow-num">04</div>
+        <h4>AI + Alerts</h4>
+        <p>Insights generated, anomalies checked, pacing + automation rules evaluated</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-arrow">›</div>
+        <div class="workflow-num">05</div>
+        <h4>Redis Cache</h4>
+        <p>Query results cached 10 min. TanStack Query adds 5 min stale-time client-side</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-num">06</div>
+        <h4>Client Dashboard</h4>
+        <p>Tenant-isolated queries render charts, KPIs, and insights</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:600;color:var(--slate-800);margin-bottom:10px;">Caching Strategy</h3>
+        <p style="font-size:13px;color:var(--slate-500);line-height:1.6;margin-bottom:12px;">Two-layer cache: Upstash Redis (server-side, 10 min TTL) for query results, and TanStack Query (client-side, 5 min staleTime). Keys namespaced by <code class="code">metrics:{type}:{clientId}:...</code> for per-tenant isolation.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="tag tag-blue">Redis 10 min</span>
+          <span class="tag tag-blue">TanStack 5 min</span>
+          <span class="tag tag-slate">Per-tenant keys</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:600;color:var(--slate-800);margin-bottom:10px;">Tenant Isolation</h3>
+        <p style="font-size:13px;color:var(--slate-500);line-height:1.6;margin-bottom:12px;">Every API route reads <code class="code">client_id</code> from the signed JWT (<code class="code">da_token</code>) and applies it as a hard WHERE clause. Agency impersonation uses a separate <code class="code">da_agency_token</code> cookie with explicit client override.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="tag tag-green">JWT-signed tenant</span>
+          <span class="tag tag-green">Hard WHERE clause</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TECH STACK ─────────────────────────────────────── -->
+  <section id="tech">
+    <div class="section-label">Technology</div>
+    <h2>Tech Stack</h2>
+    <p class="section-desc">Production-grade Next.js App Router monolith deployed to Vercel, with Neon Postgres, Upstash Redis, and Resend.</p>
+
+    <div class="grid-2" style="gap:24px;">
+      <div>
+        <div class="tech-group" style="margin-bottom:20px;">
+          <h3>Framework &amp; Runtime</h3>
+          <div class="tech-list">
+            <span class="tech-pill">Next.js App Router</span>
+            <span class="tech-pill">TypeScript</span>
+            <span class="tech-pill">Node.js 24</span>
+            <span class="tech-pill">Vercel</span>
+          </div>
+        </div>
+        <div class="tech-group" style="margin-bottom:20px;">
+          <h3>Database &amp; ORM</h3>
+          <div class="tech-list">
+            <span class="tech-pill">Neon Postgres</span>
+            <span class="tech-pill">Drizzle ORM</span>
+            <span class="tech-pill">Upstash Redis</span>
+            <span class="tech-pill">Materialized Views</span>
+          </div>
+        </div>
+        <div class="tech-group">
+          <h3>Frontend</h3>
+          <div class="tech-list">
+            <span class="tech-pill">React 19</span>
+            <span class="tech-pill">TanStack Query</span>
+            <span class="tech-pill">Tailwind CSS</span>
+            <span class="tech-pill">shadcn/ui</span>
+            <span class="tech-pill">Recharts</span>
+            <span class="tech-pill">@dnd-kit</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="tech-group" style="margin-bottom:20px;">
+          <h3>AI &amp; LLM</h3>
+          <div class="tech-list">
+            <span class="tech-pill">Anthropic SDK</span>
+            <span class="tech-pill">OpenAI SDK</span>
+            <span class="tech-pill">Google Gemini</span>
+            <span class="tech-pill">Streaming SSE</span>
+            <span class="tech-pill">Prompt Caching</span>
+          </div>
+        </div>
+        <div class="tech-group" style="margin-bottom:20px;">
+          <h3>Infrastructure &amp; Ops</h3>
+          <div class="tech-list">
+            <span class="tech-pill">Vercel Cron</span>
+            <span class="tech-pill">Resend Email</span>
+            <span class="tech-pill">Sentry</span>
+            <span class="tech-pill">JWT Auth</span>
+          </div>
+        </div>
+        <div class="tech-group">
+          <h3>Build &amp; Quality</h3>
+          <div class="tech-list">
+            <span class="tech-pill">ESLint</span>
+            <span class="tech-pill">Turbopack</span>
+            <span class="tech-pill">Drizzle Studio</span>
+            <span class="tech-pill">Mock Data Mode</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PHASES ─────────────────────────────────────────── -->
+  <section id="phases">
+    <div class="section-label">Delivery History</div>
+    <h2>Shipped Phases</h2>
+    <p class="section-desc">All seven phases landed between 2026-04-30 and 2026-05-02. Each phase added a database migration, new API routes, and frontend pages.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 1 — Foundation</div>
+        <div class="timeline-title">Core Platform &amp; Multi-Tenant Auth</div>
+        <div class="timeline-items">
+          <span class="tag tag-slate">JWT auth</span>
+          <span class="tag tag-slate">Agency + client portals</span>
+          <span class="tag tag-slate">Initial integrations (Google Ads, Meta, GA4, GSC, GMB)</span>
+          <span class="tag tag-slate">Nightly cron</span>
+          <span class="tag tag-slate">Migration 0001</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 2 — Scale &amp; Real-time · 2026-05-01</div>
+        <div class="timeline-title">Redis Caching, TanStack Query, AI Chat, Scheduled Reports</div>
+        <div class="timeline-items">
+          <span class="tag tag-blue">Redis query cache</span>
+          <span class="tag tag-blue">TanStack Query</span>
+          <span class="tag tag-purple">AI Chat (3 providers)</span>
+          <span class="tag tag-blue">Scheduled reports + email</span>
+          <span class="tag tag-slate">Migration 0002</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 3 — Polish &amp; Enterprise · 2026-05-01</div>
+        <div class="timeline-title">White-Label, Custom KPIs, 3 New Integrations, Sentry</div>
+        <div class="timeline-items">
+          <span class="tag tag-amber">White-label branding</span>
+          <span class="tag tag-amber">Custom KPIs</span>
+          <span class="tag tag-blue">CallRail</span>
+          <span class="tag tag-blue">Klaviyo</span>
+          <span class="tag tag-blue">Sprout Social</span>
+          <span class="tag tag-red">Sentry monitoring</span>
+          <span class="tag tag-slate">Migration 0003</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 5 — AI Intelligence &amp; Alerts · 2026-05-01</div>
+        <div class="timeline-title">Proactive Insights, Budget Pacing, Anomaly Push, FB+IG Organic, GMB Reviews</div>
+        <div class="timeline-items">
+          <span class="tag tag-purple">AI Insights</span>
+          <span class="tag tag-amber">Budget pacing</span>
+          <span class="tag tag-amber">Anomaly alerts (email+Slack)</span>
+          <span class="tag tag-green">FB + IG organic</span>
+          <span class="tag tag-green">GMB reviews</span>
+          <span class="tag tag-purple">AI weekly summary</span>
+          <span class="tag tag-slate">Migration 0004</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 5A — Direct Social APIs · 2026-05-02</div>
+        <div class="timeline-title">Google Ads MCC Upgrade, YouTube, LinkedIn, TikTok, Pinterest Organics</div>
+        <div class="timeline-items">
+          <span class="tag tag-green">Google Ads MCC</span>
+          <span class="tag tag-blue">YouTube Analytics</span>
+          <span class="tag tag-blue">LinkedIn Organic</span>
+          <span class="tag tag-cyan">TikTok Organic</span>
+          <span class="tag tag-red">Pinterest Analytics</span>
+          <span class="tag tag-slate">7-tab Social page</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 6 — Advanced Analytics · 2026-05-02</div>
+        <div class="timeline-title">AI Chat Tools, Forecasting, Attribution, LinkedIn/TikTok Ads, Widget API, Portal, Sheets/Looker</div>
+        <div class="timeline-items">
+          <span class="tag tag-purple">5 AI chat tools</span>
+          <span class="tag tag-blue">Forecasting + dashed charts</span>
+          <span class="tag tag-blue">Attribution modeling</span>
+          <span class="tag tag-blue">LinkedIn Ads + TikTok Ads</span>
+          <span class="tag tag-amber">Client portal</span>
+          <span class="tag tag-green">Sheets + Looker connectors</span>
+          <span class="tag tag-slate">Migration 0005</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">Phase 7 — Automation &amp; Completion · 2026-05-02</div>
+        <div class="timeline-title">Notification History, Pacing Chart, Drag-Drop, Portal Config, Automation Rules, Goals, Shareable Links</div>
+        <div class="timeline-items">
+          <span class="tag tag-blue">Notification history</span>
+          <span class="tag tag-amber">Pacing chart</span>
+          <span class="tag tag-blue">Drag-drop widgets</span>
+          <span class="tag tag-amber">Agency portal config</span>
+          <span class="tag tag-purple">Automation rules engine</span>
+          <span class="tag tag-green">Goal tracking</span>
+          <span class="tag tag-cyan">Shareable report links</span>
+          <span class="tag tag-slate">Migration 0006</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ROUTES ─────────────────────────────────────────── -->
+  <section id="routes">
+    <div class="section-label">Route Map</div>
+    <h2>Dashboard Pages</h2>
+    <p class="section-desc">Every dashboard route has a dedicated page component, chart suite, and connecting API routes.</p>
+
+    <div class="grid-3">
+      <div class="card" style="padding:16px;">
+        <div style="font-size:11px;font-weight:600;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Paid Channels</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/google-ads</code><span style="font-size:12px;color:var(--slate-400);">Spend, CTR, ROAS, pacing</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/meta-ads</code><span style="font-size:12px;color:var(--slate-400);">Reach, CPM, pacing</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/linkedin-ads</code><span style="font-size:12px;color:var(--slate-400);">B2B paid campaigns</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/tiktok-ads</code><span style="font-size:12px;color:var(--slate-400);">Video ad campaigns</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:16px;">
+        <div style="font-size:11px;font-weight:600;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Social &amp; Web</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/social</code><span style="font-size:12px;color:var(--slate-400);">7 platform tabs</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/ga4</code><span style="font-size:12px;color:var(--slate-400);">Sessions, events</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/search-console</code><span style="font-size:12px;color:var(--slate-400);">SEO: clicks, position</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/gmb</code><span style="font-size:12px;color:var(--slate-400);">Reviews, avg. rating</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:16px;">
+        <div style="font-size:11px;font-weight:600;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Intelligence &amp; Tools</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/chat</code><span style="font-size:12px;color:var(--slate-400);">AI streaming chat</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/attribution</code><span style="font-size:12px;color:var(--slate-400);">4-model comparison</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/reports</code><span style="font-size:12px;color:var(--slate-400);">Schedule + share links</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/notifications</code><span style="font-size:12px;color:var(--slate-400);">Alerts + history</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:16px;">
+        <div style="font-size:11px;font-weight:600;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Marketing Channels</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/call-tracking</code><span style="font-size:12px;color:var(--slate-400);">CallRail calls</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/email-marketing</code><span style="font-size:12px;color:var(--slate-400);">Klaviyo campaigns</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:16px;">
+        <div style="font-size:11px;font-weight:600;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Configuration</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/settings</code><span style="font-size:12px;color:var(--slate-400);">Integrations, branding, KPIs</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/settings</code><span style="font-size:12px;color:var(--slate-400);">Goals, automation, notifs</span></div>
+        </div>
+      </div>
+      <div class="card" style="padding:16px;">
+        <div style="font-size:11px;font-weight:600;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Public &amp; Portal</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/portal/[slug]</code><span style="font-size:12px;color:var(--slate-400);">Client-facing branded view</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/r/[token]</code><span style="font-size:12px;color:var(--slate-400);">Shareable report snapshot</span></div>
+          <div style="display:flex;gap:8px;align-items:center;"><code class="code" style="font-size:11px;">/agency/*</code><span style="font-size:12px;color:var(--slate-400);">Super-admin management</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <strong>Ducker Analytica</strong> &mdash; Built for Ducker Creative &middot; <a href="https://ducker-analytica.vercel.app" style="color:rgba(255,255,255,0.5);text-decoration:none;">ducker-analytica.vercel.app</a> &middot; Report generated 2026-05-02
+</footer>
+
+</body>
+</html>
